@@ -1,0 +1,27 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+}
+
+<div class="text-center" id="app">
+    <h1 class="display-4">{{welcome}}</h1>
+    <p v-html="learnAbout"></p>
+    <p v-html="exampleAbout" class="h4 text-break"></p>
+</div>
+
+@section Scripts
+{ 
+    <script type="text/javascript">
+       let app = new Vue({
+           el: '#app',
+           data() {
+               return {
+                   welcome: '@Model.ViewModel.WelcomeText',
+                   learnAbout: '@Html.Raw(Model.ViewModel.LearnText)',
+                   exampleAbout: '@Html.Raw(Model.ViewModel.ExampleAbout)'
+               }
+           }
+       });
+    </script>
+}

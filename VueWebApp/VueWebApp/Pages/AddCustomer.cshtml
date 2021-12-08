@@ -1,0 +1,185 @@
+﻿@page
+@model AddCustomerModel
+@{
+    ViewData["Title"] = Model.PageTitle;
+}
+<fieldset class="border p-2">
+    <legend class="w-auto">@Model.PageTitle</legend>
+    <div class="row" id="app">
+        <div class="col-sm-12">
+            @Html.ValidationSummary(true)
+            <form method="post"> 
+                <div class="form-group row">
+                    <div class="col-sm-6 col-xl-6">
+                        <input type="text" class="form-control" v-model="Customer.First" id="Customer_First" name="Customer.First" placeholder="First Name" />
+                        <span data-valmsg-for="Customer_First" data-valmsg-replace="true" class="field-validation-error" ref="Customer_First"></span>
+                    </div>
+                    <div class="col-sm-6 col-xl-6">
+                        <input type="text" class="form-control" v-model="Customer.Last" id="Customer_Last" name="Customer.Last" placeholder="Last Name" />
+                        <span data-valmsg-for="Customer_Last" data-valmsg-replace="true" class="field-validation-error" ref="Customer_Last"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-6 col-xl-6">
+                        <input type="text" class="form-control" v-model="Customer.Email" id="Customer_Email" name="Customer.Email" placeholder="Email Address" />
+                        <span data-valmsg-for="Customer_Email" data-valmsg-replace="true" class="field-validation-error" ref="Customer_Email"></span>
+                    </div>
+                </div>
+                <hr />
+                <p class="h5">Contact Information</p>
+                <div v-for="(contact, index) in Customer.ContactDetails" :key="index">
+                    <div v-if="index > 0" class="row">
+                        <div class="col-sm-12">
+                            <b class="float-left">Contact {{index + 1}}</b>
+                            <a class="btn-sm btn-primary float-right mb-2" v-on:click.prevent="removeContact(index)" href="javascript:void(0)"><i class="bi bi-trash"></i></a>
+                        </div>
+                    </div>
+                    <div v-else class="row">
+                        <div class="col-sm-12">
+                            <b class="float-left">Contact {{index + 1}}</b>
+                            <a class="btn-sm btn-primary float-right mb-2" v-on:click="addContact" href="javascript:void(0)"><i class="bi bi-plus"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 col-xl-6">
+                            <select class="form-control" v-model="contact.NumberType" id="'Customer_ContactDetails['+ index +']_NumberType'" :name="'Customer.ContactDetails['+ index +'].NumberType'">
+                                <option v-for="(s, indx) in SelectItems" :key="indx" :value="s.Value">{{s.Text}}</option>
+                            </select>
+                            <span :data-valmsg-for="'Customer_ContactDetails['+ index +']_NumberType'" data-valmsg-replace="true" class="field-validation-error" :ref="'Customer_ContactDetails['+ index +']_NumberType'"></span>
+                        </div>
+                        <div class="col-sm-6 col-xl-6">
+                            <input class="form-control" v-model="contact.PhoneNumber" id="'Customer_ContactDetails['+ index +']_PhoneNumber'" :name="'Customer.ContactDetails['+ index +'].PhoneNumber'" placeholder="Phone Number" />
+                            <span :data-valmsg-for="'Customer_ContactDetails['+ index +']_PhoneNumber'" data-valmsg-replace="true" class="field-validation-error" :ref="'Customer_ContactDetails['+ index +']_PhoneNumber'"></span>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <p class="h5">Address Information</p>
+                <div v-for="(address, index) in Customer.AddressDetails" :key="index">
+                    <div v-if="index > 0" class="row">
+                        <div class="col-sm-12">
+                            <b class="float-left">Address {{index + 1}}</b>
+                            <a class="btn-sm btn-primary float-right mb-2" v-on:click.prevent="removeAddress(index)" href="javascript:void(0)"><i class="bi bi-trash"></i></a>
+                        </div>
+                    </div>
+                    <div v-else class="row">
+                        <div class="col-sm-12">
+                            <b class="float-left">Address {{index + 1}}</b>
+                            <a class="btn-sm btn-primary float-right mb-2" v-on:click="addAddress" href="javascript:void(0)"><i class="bi bi-plus"></i></a>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 col-xl-6">
+                            <select class="form-control" v-model="address.AddressType" id="'Customer_AddressDetails['+ index +']_AddressType'" :name="'Customer.AddressDetails['+ index +'].AddressType'">
+                                <option v-for="(s, indx) in SelectItems" :key="indx" :value="s.Value">{{s.Text}}</option>
+                            </select>
+                            <span :data-valmsg-for="'Customer_AddressDetails['+ index +']_AddressType'" data-valmsg-replace="true" class="field-validation-error" :ref="'Customer_AddressDetails['+ index +']_AddressType'"></span>
+                        </div>
+                        <div class="col-sm-6 col-xl-6">
+                            <input class="form-control" v-model="address.AddressLine1" id="'Customer_AddressDetails['+ index +']_AddressLine1'" :name="'Customer.AddressDetails['+ index +'].AddressLine1'" placeholder="Address Line 1" />
+                            <span :data-valmsg-for="'Customer_AddressDetails['+ index +']_AddressLine1'" data-valmsg-replace="true" class="field-validation-error" :ref="'Customer_AddressDetails['+ index +']_AddressLine1'"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 col-xl-6">
+                            <input class="form-control" v-model="address.AddressLine2" id="'Customer_AddressDetails['+ index +']_AddressLine2'" :name="'Customer.AddressDetails['+ index +'].AddressLine2'" placeholder="Address Line 2 (optional)" />
+                            <span :data-valmsg-for="'Customer_AddressDetails['+ index +']_AddressLine2'" data-valmsg-replace="true" class="field-validation-error" :ref="'Customer_AddressDetails['+ index +']_AddressLine2'"></span>
+                        </div>
+                        <div class="col-sm-6 col-xl-6">
+                            <input class="form-control" v-model="address.City" id="'Customer_AddressDetails['+ index +']_City'" :name="'Customer.AddressDetails['+ index +'].City'" placeholder="City" />
+                            <span :data-valmsg-for="'Customer_AddressDetails['+ index +']_City'" data-valmsg-replace="true" class="field-validation-error" :ref="'Customer_AddressDetails['+ index +']_City'"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 col-xl-6">
+                            <input class="form-control" v-model="address.State" id="'Customer_AddressDetails['+ index +']_State'" :name="'Customer.AddressDetails['+ index +'].State'" placeholder="State" />
+                            <span :data-valmsg-for="'Customer_AddressDetails['+ index +']_State'" data-valmsg-replace="true" class="field-validation-error" :ref="'Customer_AddressDetails['+ index +']_State'"></span>
+                        </div>
+                        <div class="col-sm-6 col-xl-6">
+                            <input class="form-control" v-model="address.Country" id="'Customer_AddressDetails['+ index +']_Country'" :name="'Customer.AddressDetails['+ index +'].Country'" placeholder="Country" />
+                            <span :data-valmsg-for="'Customer_AddressDetails['+ index +']_Country'" data-valmsg-replace="true" class="field-validation-error" :ref="'Customer_AddressDetails['+ index +']_Country'"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-6 col-xl-6">
+                            <input class="form-control" v-model="address.PinCode" id="'Customer_AddressDetails['+ index +']_PinCode'" :name="'Customer.AddressDetails['+ index +'].PinCode'" placeholder="Pin Code" />
+                            <span :data-valmsg-for="'Customer_AddressDetails['+ index +']_PinCode'" data-valmsg-replace="true" class="field-validation-error" :ref="'Customer_AddressDetails['+ index +']_PinCode'"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <input type="hidden" asp-for="Customer.Id" />
+                    <a class="btn btn-secondary" href="/Customers">Cancel</a>
+                    <input type="submit" asp-page-handler="@(Model.Customer.Id > 0 ? "Update": "Register")" class="btn btn-primary ml-2" value="@(Model.Customer.Id > 0 ? "Edit": "Add")" />
+                </div>
+            </form>
+        </div>
+    </div>
+</fieldset>
+@section Scripts
+{
+    <script type="text/javascript">
+        function addressDetail() {
+            return {
+                Id: '',
+                AddressType: '',
+                AddressLine1: '',
+                AddressLine2: '',
+                PinCode: '',
+                City: '',
+                Country: ''
+            }
+        }
+        function contactDetail() {
+            return {
+                Id: '',
+                NumberType: '',
+                PhoneNumber: ''
+            }
+        }
+        let app = new Vue({
+           el: '#app',
+           data() {
+               return {
+                   Errors: @Html.Raw(JsonSerializer.Serialize(Model.Errors)),
+                   SelectItems: @Html.Raw(JsonSerializer.Serialize(Model.SelectListItems)),
+                   Customer: {
+                       ContactDetails: @Html.Raw(JsonSerializer.Serialize(Model.Customer.ContactDetails)),
+                       AddressDetails: @Html.Raw(JsonSerializer.Serialize(Model.Customer.AddressDetails)),
+                       First: '@Model.Customer.First',
+                       Last: '@Model.Customer.Last',
+                       Email: '@Model.Customer.Email'
+                   }
+               }
+           },
+           methods: {
+               addContact: function (event) {
+                   event.preventDefault();
+                   this.Customer.ContactDetails.push(contactDetail());
+               },
+               removeContact: function (i) {
+                   this.Customer.ContactDetails.splice(i, 1);
+               },
+               addAddress: function () {
+                   event.preventDefault();
+                   this.Customer.AddressDetails.push(addressDetail());
+               },
+               removeAddress: function (i) {
+                   this.Customer.AddressDetails.splice(i, 1);
+               }
+           },
+           mounted: function () {
+               let vm = this;
+               if (vm.Errors !== null && vm.Errors !== undefined) {
+                   for (var e in vm.Errors) {
+                       if (vm.$refs[e] === undefined) continue;
+                       if (vm.$refs[e].length === undefined)
+                           vm.$refs[e].innerHTML = vm.Errors[e][0];
+                       else
+                           vm.$refs[e][0].innerHTML = vm.Errors[e][0];
+                   }
+               }
+           }
+       });
+    </script>
+}
