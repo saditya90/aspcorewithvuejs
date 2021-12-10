@@ -160,7 +160,7 @@
                removeContact: function (i) {
                    this.Customer.ContactDetails.splice(i, 1);
                },
-               addAddress: function () {
+               addAddress: function (event) {
                    event.preventDefault();
                    this.Customer.AddressDetails.push(addressDetail());
                },
